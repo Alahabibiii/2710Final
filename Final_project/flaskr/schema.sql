@@ -10,10 +10,9 @@ CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
-  role  TEXT NOT NULL,
+  role TEXT NOT NULL,
   infodone TEXT NOT NULL
 );
-
 
 CREATE TABLE Customers (
     customerID INT PRIMARY KEY,
@@ -29,10 +28,8 @@ CREATE TABLE Customers (
     income DECIMAL(10,2), -- Only if kind is "home"
     businessCategory VARCHAR(255), -- Only if kind is "business"
     companyGrossAnnualIncome DECIMAL(15,2), -- Only if kind is "business"
-    foreign key (customerID) references user(id)
-    on delete set null
+    FOREIGN KEY (customerID) REFERENCES user(id) ON DELETE SET NULL
 );
-
 
 CREATE TABLE Products (
     productID INT PRIMARY KEY,
@@ -43,51 +40,44 @@ CREATE TABLE Products (
     genreClassification VARCHAR(255)
 );
 
-
 CREATE TABLE Transactions (
     orderNumber INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE,
     salespersonName VARCHAR(255),
-    productID INT, -- Foreign key referencing Products table
-    customerID INT, -- Foreign key referencing Customers table
+    productID INT, 
+    customerID INT, 
     price DECIMAL(10,2),
-    quantity INT
+    quantity INT,
+    FOREIGN KEY (productID) REFERENCES Products(productID),
+    FOREIGN KEY (customerID) REFERENCES Customers(customerID)
 );
 
-
 CREATE TABLE Salespersons (
-    employeeID INT PRIMARY KEY
+    employeeID INT PRIMARY KEY,
     name VARCHAR(255),
     address VARCHAR(255),
     email VARCHAR(255),
     jobTitle VARCHAR(255),
-    storeAssigned VARCHAR(255), -- Foreign key referencing Store table
-    salary DECIMAL(12,2)
-    foreign key (storeAssigned) references store(storeID)
-    on delete set null
+    storeAssigned INT, -- Foreign key referencing Store table
+    salary DECIMAL(12,2),
+    FOREIGN KEY (storeAssigned) REFERENCES Store(storeID) ON DELETE SET NULL
 );
-
 
 CREATE TABLE Store (
     storeID INT PRIMARY KEY,
     address VARCHAR(255),
-    manager VARCHAR(255), -- Foreign key referencing Salespersons table
+    manager INT, -- Foreign key referencing Salespersons table
     numberOfSalespersons INT,
-    regionID INT -- Foreign key referencing Region table
+    regionID INT, -- Foreign key referencing Region table
+    FOREIGN KEY (manager) REFERENCES Salespersons(employeeID),
+    FOREIGN KEY (regionID) REFERENCES Region(regionID)
 );
-
-INSERT INTO Store VALUES
-(1, '123 Market St', 1, 1, 1),
-(2, '456 Retail St', 3, 2, 2),
-(3, 'online', 6,1,1)
-;
-
-
 
 CREATE TABLE Region (
     regionID INT PRIMARY KEY,
     regionName VARCHAR(255),
-    regionManager VARCHAR(255) -- Foreign key referencing Salespersons table
+    regionManager INT, -- Foreign key referencing Salespersons table
+    FOREIGN KEY (regionManager) REFERENCES Salespersons(employeeID)
 );
 
 
